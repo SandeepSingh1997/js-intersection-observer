@@ -6,28 +6,53 @@ var lastImageId = 1;
 function App() {
   const [imageList, setImageList] = useState([]);
 
+  async function getImages(count) {
+    try {
+      const images = await fetchImages(count);
+      return images;
+    } catch (error) {
+      return [];
+    }
+  }
+
   useEffect(() => {
-    getImages(7)
-      .then((images) => {
-        setImageList(images);
-      })
-      .catch((error) => {
-        setImageList([]);
+    getImages(7).then((images) => {
+      const mainContainer = document.querySelector(".container");
+
+      const initialImages = images.map((image) => {
+        return (
+          <Image
+            key={image.id}
+            id={image.id}
+            title={image.title}
+            url={image.url}
+          />
+        );
       });
 
-    // const lastImageContainer = document.querySelector(
-    //   ".image-container:last-child"
-    // );
-
-    // const intersectionObserver = new IntersectionObserver(
-    //   (entries) => {
-    //     console.log(entries);
-    //   },
-    //   { threshold: 0.5 }
-    // );
-
-    // intersectionObserver.observe(lastImageContainer);
+      setImageList(images);
+      console.log(initialImageLoaded, "truthy");
+      ReactDOM.render(initialImages, mainContainer);
+    });
   }, []);
+
+  function observe() {
+    const lastImageContainer = document.querySelector(
+      ".image-container:last-child"
+    );
+    console.log("hello: ", lastImageContainer);
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        console.log(entries);
+      },
+      { threshold: 0.5 }
+    );
+
+    intersectionObserver.observe(lastImageContainer);
+
+    console.log(initialImageLoaded, "falsy");
+  }
 
   function images() {
     return imageList.map((image) => {
@@ -42,7 +67,7 @@ function App() {
     });
   }
 
-  async function getImages(count) {
+  async function fetchImages(count) {
     const imagePromises = [];
     for (let i = 0; i < count; i++) {
       imagePromises.push(
@@ -57,7 +82,7 @@ function App() {
         for (const response of responses) {
           images.push((await response.json()).photo);
         }
-        console.log(images);
+        // console.log(images);
         return images;
       })
       .catch((error) => {
