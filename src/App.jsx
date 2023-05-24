@@ -7,7 +7,7 @@ function App() {
   const [imageList, setImageList] = useState([]);
 
   useEffect(() => {
-    getImages(5)
+    getImages(7)
       .then((images) => {
         setImageList(images);
       })
@@ -46,15 +46,18 @@ function App() {
     const imagePromises = [];
     for (let i = 0; i < count; i++) {
       imagePromises.push(
-        fetch(`https://jsonplaceholder.typicode.com/photos/${lastImageId++}`)
+        fetch(
+          `https://api.slingacademy.com/v1/sample-data/photos/${lastImageId++}`
+        )
       );
     }
     return await Promise.all(imagePromises)
       .then(async (responses) => {
         const images = [];
         for (const response of responses) {
-          images.push(await response.json());
+          images.push((await response.json()).photo);
         }
+        console.log(images);
         return images;
       })
       .catch((error) => {
