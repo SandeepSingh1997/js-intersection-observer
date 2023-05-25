@@ -11,7 +11,7 @@ function App() {
 
   function updateImageList() {
     getImages(7).then((images) => {
-      console.log("images: ", [...imageList, ...images]);
+      // console.log("images: ", [...imageList, ...images]);
       setImageList([...imageList, ...images]);
     });
   }
@@ -45,7 +45,7 @@ function App() {
       const images = await fetchImages(count);
       return images;
     } catch (error) {
-      return [];
+      return imageList;
     }
   }
 

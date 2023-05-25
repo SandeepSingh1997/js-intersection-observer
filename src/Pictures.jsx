@@ -7,25 +7,25 @@ export default function Pictures({ imageList, updateImageList }) {
       ".image-container:last-child"
     );
 
-    console.log("Observing ", lastImageContainer);
+    // console.log("Observing ", lastImageContainer);
 
     const intersectionObserver = new IntersectionObserver((entries) => {
-      console.log(entries);
+      //   console.log(entries);
       const lastImage = entries[0];
       if (lastImage.isIntersecting) {
-        console.log("last image", lastImage.target);
         updateImageList();
+        // console.log("unobserving", lastImage.target);
         intersectionObserver.unobserve(lastImage.target);
       }
     });
     intersectionObserver.observe(lastImageContainer);
-  }, []);
+  }, [imageList]);
 
   function images() {
     return imageList.map((image) => {
       return (
         <Image
-          //   key={image.id}
+          key={image.id}
           id={image.id}
           title={image.title}
           url={image.url}
