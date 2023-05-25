@@ -6,11 +6,15 @@ function App() {
   const lastImageId = useRef(1);
 
   useEffect(() => {
-    getImages(7).then((images) => {
-      setImageList(images);
-    });
+    updateImageList();
   }, []);
 
+  function updateImageList() {
+    getImages(7).then((images) => {
+      console.log("images: ", [...imageList, ...images]);
+      setImageList([...imageList, ...images]);
+    });
+  }
   async function fetchImages(count) {
     const imagePromises = [];
     for (let i = 0; i < count; i++) {
@@ -46,9 +50,9 @@ function App() {
   }
 
   if (imageList.length > 0) {
-    return <Pictures imageList={imageList} />;
+    return <Pictures imageList={imageList} updateImageList={updateImageList} />;
   } else {
-    return null;
+    return <h1>Loading...</h1>;
   }
 }
 
