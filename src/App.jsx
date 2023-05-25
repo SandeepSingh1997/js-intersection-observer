@@ -4,16 +4,21 @@ import Pictures from "./Pictures";
 function App() {
   const [imageList, setImageList] = useState([]);
   const lastImageId = useRef(1);
+  const [areNewImagesLoading, setAreNewImagesLoading] = useState(true);
 
   useEffect(() => {
     updateImageList();
   }, []);
 
   function updateImageList() {
-    getImages(7).then((images) => {
-      // console.log("images: ", [...imageList, ...images]);
-      setImageList([...imageList, ...images]);
-    });
+    setAreNewImagesLoading(true);
+    setTimeout(() => {
+      getImages(7).then((images) => {
+        // console.log("images: ", [...imageList, ...images]);
+        setImageList([...imageList, ...images]);
+        setAreNewImagesLoading(false);
+      });
+    }, 2000);
   }
   async function fetchImages(count) {
     const imagePromises = [];
@@ -50,7 +55,12 @@ function App() {
   }
 
   if (imageList.length > 0) {
-    return <Pictures imageList={imageList} updateImageList={updateImageList} />;
+    return (
+      <>
+        <Pictures imageList={imageList} updateImageList={updateImageList} />
+        {areNewImagesLoading ? <p>Wait a second...</p> : null}
+      </>
+    );
   } else {
     return <h1>Loading...</h1>;
   }
